@@ -54,12 +54,13 @@ void loop() {
      }}*/
     
     for(i =0; i<4; i++){  //print
+      if(db[i][0]!=0){
     for(int j=0; j<4;j++){
       Serial.print(db[i][j], HEX);
       Serial.print(" ");
       delay(500);
       }
-      Serial.println("");
+      Serial.println("");}
     }
    //Serial.println(db[i], HEX);}}
   // put your main code here, to run repeatedly:
