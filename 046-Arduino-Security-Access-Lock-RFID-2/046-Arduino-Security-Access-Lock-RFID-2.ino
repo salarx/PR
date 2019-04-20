@@ -9,7 +9,7 @@ void setup() {
 }
 
 void loop() {
-    Serial.readBytes(mystr,4);
+    Serial.readBytes(mystr,4);                    //print the scanned TAG
     Serial.print("Scanned Code ");
     for(int i=0;i<4;i++){
       Serial.print(mystr[i], HEX);
@@ -18,8 +18,8 @@ void loop() {
    }
    Serial.println("");
 
-  for(i=0;i<4;i++){
-      if(db[i][0]==mystr[0]){                     //same tag scanned again
+  for(i=0;i<4;i++){                                //fill tag in the database 
+      if(db[i][0]==mystr[0]){                     
         break;
       }
       else if(db[i][0]==0){
@@ -29,31 +29,9 @@ void loop() {
         break;
       }
   }      
-   
-/*   if(db[0][0]==NULL){     // empty db
-   for(i=0;i<4;i++){
-    db[0][i]=mystr[i];}
-    count++;
-    }
-   else{                            // not empty
-    for(i=0;i<4;i++){
-      if(db[i][0]==mystr[0]){                     
-        a = 5;
-        break;
-        }
-    }
-     for(int p=0;p<4;p++){
-       if(db[p][0]!=mystr[0])
-       {                                                        
-        for(int j=0; j<4; j++){
-      db[count-1][j]=mystr[j];}
-      count++;
-      
-    }
-    break;
-     }}*/
+
     
-    for(i =0; i<4; i++){  //print
+    for(i =0; i<4; i++){                              //print database
     for(int j=0; j<4;j++){
       Serial.print(db[i][j], HEX);
       Serial.print(" ");
@@ -61,7 +39,6 @@ void loop() {
       }
       Serial.println("");
     }
-   //Serial.println(db[i], HEX);}}
-  // put your main code here, to run repeatedly:
+  
 
 }
