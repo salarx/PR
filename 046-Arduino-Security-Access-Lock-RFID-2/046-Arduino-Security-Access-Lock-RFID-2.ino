@@ -1,6 +1,6 @@
 byte mystr[4];
 byte db[4][4];
-int count = 0, a, i;
+int j, i, count=0, a;
 
 void setup() {
   Serial.begin(9600);
@@ -10,11 +10,11 @@ void setup() {
 
 void loop() {
     Serial.readBytes(mystr,4);
-    Serial.print("Scanned Code");
+    Serial.print("Scanned Code ");
     for(int i=0;i<4;i++){
       Serial.print(mystr[i], HEX);
       Serial.print(" ");
-      delay(1000);
+      delay(500);
    }
    Serial.println("");
 
@@ -22,15 +22,15 @@ void loop() {
       if(db[i][0]==mystr[0]){                     //same tag scanned again
         break;
       }
-      else if(db[i][0]==NULL){
-        for(j=0;j<4;i++){
+      else if(db[i][0]==0){
+        for(j=0;j<4;j++){
           db[i][j]=mystr[j];
         }
         break;
       }
   }      
    
-  /* if(db[0][0]==NULL){     // empty db
+/*   if(db[0][0]==NULL){     // empty db
    for(i=0;i<4;i++){
     db[0][i]=mystr[i];}
     count++;
@@ -38,19 +38,26 @@ void loop() {
    else{                            // not empty
     for(i=0;i<4;i++){
       if(db[i][0]==mystr[0]){                     //same tag scanned again
-        a = 0;
+        a = 5;
         break;
         }
-       else{                                   
-        for(int i=0; i<4; i++)
-      db[count][i]=mystr[i];
+    }
+     for(int p=0;p<4;p++){
+       if(db[p][0]!=mystr[0])
+       {                                                        
+        for(int j=0; j<4; j++){
+      db[count-1][j]=mystr[j];}
+      count++;
       
-    }}} */
-    for(i =0; i<4; i++){
+    }
+    break;
+     }}*/
+    
+    for(i =0; i<4; i++){  //print
     for(int j=0; j<4;j++){
       Serial.print(db[i][j], HEX);
       Serial.print(" ");
-      delay(1000);
+      delay(500);
       }
       Serial.println("");
     }
