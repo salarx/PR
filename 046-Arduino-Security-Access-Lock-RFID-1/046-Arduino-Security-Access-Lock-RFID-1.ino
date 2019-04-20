@@ -62,7 +62,7 @@ void loop()
     Serial.write(mfrc522.uid.uidByte[i]);
     }    
   }
-    if(mfrc522.uid.uidByte[0]==0x74
+    if(mfrc522.uid.uidByte[0]==0x74   //jgh
   &&mfrc522.uid.uidByte[1]==0x0C
   &&mfrc522.uid.uidByte[2]==0x5C
   &&mfrc522.uid.uidByte[3]==0xD3){

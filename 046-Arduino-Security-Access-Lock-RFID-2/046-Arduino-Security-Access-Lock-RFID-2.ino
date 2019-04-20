@@ -37,7 +37,7 @@ void loop() {
     }
    else{                            // not empty
     for(i=0;i<4;i++){
-      if(db[i][0]==mystr[0]){                     //same tag scanned again
+      if(db[i][0]==mystr[0]){                     
         a = 5;
         break;
         }
