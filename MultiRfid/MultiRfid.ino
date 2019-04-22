@@ -4,15 +4,11 @@
    Example sketch/program showing how to read data from more than one PICC to serial.
    --------------------------------------------------------------------------------------------------------------------
    This is a MFRC522 library example; for further details and other examples see: https://github.com/miguelbalboa/rfid
-
    Example sketch/program showing how to read data from more than one PICC (that is: a RFID Tag or Card) using a
    MFRC522 based RFID Reader on the Arduino SPI interface.
-
    Warning: This may not work! Multiple devices at one SPI are difficult and cause many trouble!! Engineering skill
             and knowledge are required!
-
    @license Released into the public domain.
-
    Typical pin layout used:
    -----------------------------------------------------------------------------------------
                MFRC522      Arduino       Arduino   Arduino    Arduino          Arduino
@@ -25,7 +21,6 @@
    SPI MOSI    MOSI         11 / ICSP-4   51        D11        ICSP-4           16
    SPI MISO    MISO         12 / ICSP-1   50        D12        ICSP-1           14
    SPI SCK     SCK          13 / ICSP-3   52        D13        ICSP-3           15
-
 */
 
 #include <SPI.h>
@@ -145,8 +140,6 @@ void loop() {
         }
         if (access) break;                                        // If the Tag is allowed, quit the test.
       }
-
-
       if (access)
       {
         if (tagcount == NR_OF_READERS)
@@ -182,8 +175,7 @@ void loop() {
       if(tagarray[j][0]==scannedarray[i][0] && tagarray[j][1]==scannedarray[i][1]){
         present = true;
         break;
-      }
-      }
+      }}
       if(present == false){
             //print
     for(int h=0; h<4;h++){
@@ -215,12 +207,13 @@ void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
     Serial.print(buffer[i], HEX);
   }
+  Serial.println("sc array : ");
   Serial.println("");
-  Serial.println("Scanned Array : ");
   for(i = 0; i<4; i++){  //print
     for(int j=0; j<4;j++){
       Serial.print(scannedarray[i][j], HEX);
       Serial.print(" ");
+      delay(500);
       }
       Serial.println("");
     }
@@ -230,25 +223,21 @@ void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
   Serial.print("Tag n°");
   Serial.println(tagcount);
 }
-
 void DenyingTag()
 {
   tagcount = tagcount;
   access = false;
 }
-
 void AllowTag()
 {
   tagcount = tagcount + 1;
   access = true;
 }
-
 void Initialize()
 {
   tagcount = 0;
   access = false;
 }
-
 void OpenDoor()
 {
   Serial.println("Welcome! the door is now open");
@@ -260,7 +249,6 @@ void OpenDoor()
   delay(500);
   digitalWrite(GreenLed, LOW);
 }
-
 void MoreTagsNeeded()
 {
   printTagcount();
@@ -270,7 +258,6 @@ void MoreTagsNeeded()
   digitalWrite(RedLed, LOW);
   access = false;
 }
-
 void UnknownTag()
 {
   Serial.println("This Tag isn't allowed!");
