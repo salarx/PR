@@ -1,28 +1,3 @@
-
-/**
-   --------------------------------------------------------------------------------------------------------------------
-   Example sketch/program showing how to read data from more than one PICC to serial.
-   --------------------------------------------------------------------------------------------------------------------
-   This is a MFRC522 library example; for further details and other examples see: https://github.com/miguelbalboa/rfid
-   Example sketch/program showing how to read data from more than one PICC (that is: a RFID Tag or Card) using a
-   MFRC522 based RFID Reader on the Arduino SPI interface.
-   Warning: This may not work! Multiple devices at one SPI are difficult and cause many trouble!! Engineering skill
-            and knowledge are required!
-   @license Released into the public domain.
-   Typical pin layout used:
-   -----------------------------------------------------------------------------------------
-               MFRC522      Arduino       Arduino   Arduino    Arduino          Arduino
-               Reader/PCD   Uno/101       Mega      Nano v3    Leonardo/Micro   Pro Micro
-   Signal      Pin          Pin           Pin       Pin        Pin              Pin
-   -----------------------------------------------------------------------------------------
-   RST/Reset   RST          9             5         D9         RESET/ICSP-5     RST
-   SPI SS 1    SDA(SS)      ** custom, take a unused pin, only HIGH/LOW required *
-   SPI SS 2    SDA(SS)      ** custom, take a unused pin, only HIGH/LOW required *
-   SPI MOSI    MOSI         11 / ICSP-4   51        D11        ICSP-4           16
-   SPI MISO    MISO         12 / ICSP-1   50        D12        ICSP-1           14
-   SPI SCK     SCK          13 / ICSP-3   52        D13        ICSP-3           15
-*/
-
 #include <SPI.h>
 #include <MFRC522.h>
 
@@ -95,6 +70,9 @@ void loop() {
 
     for(i=0;i<4;i++){
       if(tagarray[i][0]==mystr[0]){                     //same tag scanned again
+        for(j=0;j<4;j++){
+          tagarray[i][j]=0;
+        }
         break;
       }
       else if(tagarray[i][0]==0){
@@ -105,6 +83,7 @@ void loop() {
       }
     }  //end of db array
 
+    
   for (uint8_t reader = 0; reader < NR_OF_READERS; reader++) {
 
     // Looking for new cards
@@ -117,12 +96,12 @@ void loop() {
       dump_byte_array(reader, mfrc522[reader].uid.uidByte, mfrc522[reader].uid.size);
       Serial.println();
     }
-    
-    else{
+    else if (!mfrc522[reader].PICC_IsNewCardPresent()) {
       rem_byte_array(reader);
       }
+    
   } 
-  for (j = 0; j < 4; j++) {
+  for (j = 0; j < 4; j++) { //no parking
     present = false; 
     for (i = 0; i < 4; i++){
       if(tagarray[j][0]==scannedarray[i][0] && tagarray[j][1]==scannedarray[i][1]){
@@ -145,11 +124,7 @@ void loop() {
 /**
    Helper routine to dump a byte array as hex values to Serial.
 */
-void rem_byte_array(uint8_t reader) {
-  for(j=0;j<4;j++){
-          scannedarray[reader][j]=0;
-        }  
-  }
+
 
 void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
         for(j=0;j<4;j++){
@@ -171,3 +146,9 @@ void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
       Serial.println("");
     }
 }
+
+void rem_byte_array(uint8_t reader) {
+  for(j=0;j<4;j++){
+          scannedarray[reader][j]=0;
+        }  
+  }
