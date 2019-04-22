@@ -94,4 +94,5 @@ void loop()
     digitalWrite(LED_R, LOW);
     noTone(BUZZER);
   }
+  delay(5000);
   }
