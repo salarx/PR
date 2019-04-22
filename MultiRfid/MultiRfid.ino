@@ -116,59 +116,12 @@ void loop() {
       Serial.print(F(": Card UID:"));
       dump_byte_array(reader, mfrc522[reader].uid.uidByte, mfrc522[reader].uid.size);
       Serial.println();
-
-     /* for (int x = 0; x < sizeof(tagarray); x++)                  // tagarray's row
-      {
-        for (int i = 0; i < mfrc522[reader].uid.size; i++)        //tagarray's columns
-        {
-          if ( mfrc522[reader].uid.uidByte[i] != tagarray[x][i])  //Comparing the UID in the buffer to the UID in the tag array.
-          {
-            DenyingTag();
-            break;
-          }
-          else
-          {
-            if (i == mfrc522[reader].uid.size - 1)                // Test if we browesed the whole UID.
-            {
-              AllowTag();
-            }
-            else
-            {
-              continue;                                           // We still didn't reach the last cell/column : continue testing!
-            }
-          }
-        }
-        if (access) break;                                        // If the Tag is allowed, quit the test.
-      }
-      if (access)
-      {
-        if (tagcount == NR_OF_READERS)
-        {
-          OpenDoor();
-        }
-        else
-        {
-          MoreTagsNeeded();
-        }
-      }
-      else
-      {
-        UnknownTag();
-      } */
-     // Serial.print(F("PICC type: "));
-       // MFRC522::PICC_Type piccType = mfrc522[reader].PICC_GetType(mfrc522[reader].uid.sak);
-       // Serial.println(mfrc522[reader].PICC_GetTypeName(piccType));
-      // Halt PICC   
-     // mfrc522[reader].PICC_HaltA();
-      // Stop encryption on PCD
-     // mfrc522[reader].PCD_StopCrypto1();
     }
+    
     else{
       rem_byte_array(reader);
       }
-      
-    //if (mfrc522[reader].PICC_IsNewC..
-  } //for(uint8_t reader..
+  } 
   for (j = 0; j < 4; j++) {
     present = false; 
     for (i = 0; i < 4; i++){
@@ -218,56 +171,3 @@ void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
       Serial.println("");
     }
 }
-
-/*void printTagcount() {
-  Serial.print("Tag n°");
-  Serial.println(tagcount);
-}
-void DenyingTag()
-{
-  tagcount = tagcount;
-  access = false;
-}
-void AllowTag()
-{
-  tagcount = tagcount + 1;
-  access = true;
-}
-void Initialize()
-{
-  tagcount = 0;
-  access = false;
-}
-void OpenDoor()
-{
-  Serial.println("Welcome! the door is now open");
-  Initialize();
-  digitalWrite(relayIN, LOW);
-  digitalWrite(GreenLed, HIGH);
-  delay(2000);
-  digitalWrite(relayIN, HIGH);
-  delay(500);
-  digitalWrite(GreenLed, LOW);
-}
-void MoreTagsNeeded()
-{
-  printTagcount();
-  Serial.println("System needs more cards");
-  digitalWrite(RedLed, HIGH);
-  delay(1000);
-  digitalWrite(RedLed, LOW);
-  access = false;
-}
-void UnknownTag()
-{
-  Serial.println("This Tag isn't allowed!");
-  printTagcount();
-  for (int flash = 0; flash < 5; flash++)
-  {
-    digitalWrite(RedLed, HIGH);
-    delay(100);
-    digitalWrite(RedLed, LOW);
-    delay(100);
-  }
-}
-*/
