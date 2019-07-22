@@ -19,6 +19,8 @@ byte scannedarray[4][4];
 byte tagarray[4][4];
 byte mystr[4];
 int j, i;
+unsigned long timeinit;
+unsigned long timefin;
 bool present = false;
 
 // Inlocking status :
@@ -31,6 +33,7 @@ byte ssPins[] = {SS_1_PIN, SS_2_PIN, SS_3_PIN, SS_4_PIN};
 
 // Create an MFRC522 instance :
 MFRC522 mfrc522[NR_OF_READERS];
+extern volatile unsigned long timer0_millis;
 
 /**
    Initialize.
@@ -59,14 +62,21 @@ void setup() {
 
 void loop() {
 
+  timefin = millis();
+  if(timefin-timeinit>= 20000){
+    Serial.print(timefin);
+    Serial.println(" :Time's up");
+    }
   Serial.readBytes(mystr,4);
     Serial.print("Scanned Code ");
     for(int i=0;i<4;i++){
       Serial.print(mystr[i], HEX);
       Serial.print(" ");
-      delay(500);
+      //delay(500);
     }
     Serial.println("");
+    //Serial.print("Time next is ");
+    //Serial.println(time);
 
     for(i=0;i<4;i++){
       if(tagarray[i][0]==mystr[0]){                     //same tag scanned again 
@@ -76,6 +86,9 @@ void loop() {
         break;
       }
       else if(tagarray[i][0]==0){
+        timeinit = 0UL;
+        Serial.print("Time initial is ");
+        Serial.println(timeinit);
         for(j=0;j<4;j++){
           tagarray[i][j]=mystr[j];
         }
@@ -104,10 +117,15 @@ void loop() {
   for (j = 0; j < 4; j++) { //no parking
     present = false; 
     for (i = 0; i < 4; i++){
-      if(tagarray[j][0]==scannedarray[i][0] && tagarray[j][1]==scannedarray[i][1]){
+      if(tagarray[j][0]==scannedarray[i][0] &&scannedarray[i][0]!=0 && tagarray[j][1]==scannedarray[i][1]){
         present = true;
+        noInterrupts ();
+        timer0_millis = 0;
+        interrupts ();
+        Serial.println("Time reset.");   
         break;
       }}
+      
       if(present == false){
             //print
     for(int h=0; h<4;h++){
@@ -119,6 +137,7 @@ void loop() {
       Serial.println("");
       }     
 }
+  
 }
 
 /**

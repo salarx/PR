@@ -50,8 +50,28 @@ void loop()
   //Serial.println();
   //Serial.print("Message : ");
   content.toUpperCase();
-  if (content.substring(1) == "74 0C 5C D3" || content.substring(1) == "CA 9A 5D D3") //change here the UID of the card/cards that you want to give access
+  if (content.substring(1) == "63 0B D5 83" || content.substring(1) == "76 F5 D3 83" || content.substring(1) == "74 0C 5C D3" || content.substring(1) == "CA 9A 5D D3") //change here the UID of the card/cards that you want to give access
   {
+
+  if(mfrc522.uid.uidByte[0]==0x63
+  &&mfrc522.uid.uidByte[1]==0x0B
+  &&mfrc522.uid.uidByte[2]==0xD5
+  &&mfrc522.uid.uidByte[3]==0x83){
+  
+  for(int i=0;i<4;i++){
+    Serial.write(mfrc522.uid.uidByte[i]);
+    }    
+  }
+  
+  if(mfrc522.uid.uidByte[0]==0x76
+  &&mfrc522.uid.uidByte[1]==0xF5
+  &&mfrc522.uid.uidByte[2]==0xD3
+  &&mfrc522.uid.uidByte[3]==0x83){
+  
+  for(int i=0;i<4;i++){
+    Serial.write(mfrc522.uid.uidByte[i]);
+    }    
+  }
     
   if(mfrc522.uid.uidByte[0]==0xCA
   &&mfrc522.uid.uidByte[1]==0x9A
