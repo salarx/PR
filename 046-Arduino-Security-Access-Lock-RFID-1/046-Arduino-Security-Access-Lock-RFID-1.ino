@@ -56,7 +56,7 @@ void loop()
   if(mfrc522.uid.uidByte[0]==0xCA
   &&mfrc522.uid.uidByte[1]==0x9A
   &&mfrc522.uid.uidByte[2]==0x5D
-  &&mfrc522.uid.uidByte[3]==0xD3){
+  &&mfrc522.uid.uidByte[3]==0xD3 && mfrc522.PICC_IsNewCardPresent()){
   
   for(int i=0;i<4;i++){
     Serial.write(mfrc522.uid.uidByte[i]);
@@ -65,7 +65,7 @@ void loop()
     if(mfrc522.uid.uidByte[0]==0x74
   &&mfrc522.uid.uidByte[1]==0x0C
   &&mfrc522.uid.uidByte[2]==0x5C
-  &&mfrc522.uid.uidByte[3]==0xD3){
+  &&mfrc522.uid.uidByte[3]==0xD3 && mfrc522.PICC_IsNewCardPresent()){
   
   for(int i=0;i<4;i++){
     Serial.write(mfrc522.uid.uidByte[i]);
