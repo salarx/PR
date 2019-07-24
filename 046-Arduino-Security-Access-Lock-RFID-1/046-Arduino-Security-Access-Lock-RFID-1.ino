@@ -28,7 +28,7 @@ void loop()
 {
   // Look for new cards
   if ( ! mfrc522.PICC_IsNewCardPresent()) 
-  {
+  {    
     return;
   }
   // Select one of the cards

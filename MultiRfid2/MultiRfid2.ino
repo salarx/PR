@@ -1,5 +1,6 @@
 #include <SPI.h>
 #include <MFRC522.h>
+#include <Chrono.h>
 
 // PIN Numbers : RESET + SDAs
 #define RST_PIN         9
@@ -19,9 +20,10 @@ byte scannedarray[4][4];
 byte tagarray[4][4];
 byte mystr[4];
 int j, i;
-unsigned long timeinit;
-unsigned long timefin;
+//Chrono timeinit[4];
+Chrono timefin[4];
 bool present = false;
+bool rescanned = false;
 
 // Inlocking status :
 int tagcount = 0;
@@ -33,7 +35,7 @@ byte ssPins[] = {SS_1_PIN, SS_2_PIN, SS_3_PIN, SS_4_PIN};
 
 // Create an MFRC522 instance :
 MFRC522 mfrc522[NR_OF_READERS];
-extern volatile unsigned long timer0_millis;
+//extern volatile unsigned long timer0_millis;
 
 /**
    Initialize.
@@ -61,12 +63,17 @@ void setup() {
 */
 
 void loop() {
-
-  timefin = millis();
-  if(timefin-timeinit>= 20000){
-    Serial.print(timefin);
-    Serial.println(" :Time's up");
+  for(i=0;i<4;i++){
+  if(timefin[i].hasPassed(20000) && tagarray[i][0]!=0){
+    Serial.print(timefin[i].elapsed());
+    Serial.print(" :");
+    for(j=0;j<4;j++){
+      Serial.print(tagarray[i][j], HEX);
+      Serial.print(" ");
     }
+    Serial.println(":is not parked in parking zone");
+    }
+  }
   Serial.readBytes(mystr,4);
     Serial.print("Scanned Code ");
     for(int i=0;i<4;i++){
@@ -75,23 +82,27 @@ void loop() {
       //delay(500);
     }
     Serial.println("");
-    //Serial.print("Time next is ");
-    //Serial.println(time);
-
+    
     for(i=0;i<4;i++){
+      if(mystr[0]==0){
+        break;
+        }
       if(tagarray[i][0]==mystr[0]){                     //same tag scanned again 
 /*        for(j=0;j<4;j++){
           tagarray[i][j]=0;
         } */
+        rem_byte_tagarray(i);
+        rem_byte_mystr();
         break;
       }
-      else if(tagarray[i][0]==0){
-        timeinit = 0UL;
-        Serial.print("Time initial is ");
-        Serial.println(timeinit);
+      if(tagarray[i][0]==0){
+        //timeinit[i] = elapsed();
+        //Serial.print("Time initial is ");
+        //Serial.println(timeinit[i]);
         for(j=0;j<4;j++){
           tagarray[i][j]=mystr[j];
         }
+        rem_byte_mystr();
         break;
       }
     }  //end of db array
@@ -119,10 +130,8 @@ void loop() {
     for (i = 0; i < 4; i++){
       if(tagarray[j][0]==scannedarray[i][0] &&scannedarray[i][0]!=0 && tagarray[j][1]==scannedarray[i][1]){
         present = true;
-        noInterrupts ();
-        timer0_millis = 0;
-        interrupts ();
-        Serial.println("Time reset.");   
+        timefin[j].restart();
+        Serial.println("Time reset.");
         break;
       }}
       
@@ -169,5 +178,17 @@ void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
 void rem_byte_array(uint8_t reader) {
   for(j=0;j<4;j++){
           scannedarray[reader][j]=0;
+        }  
+  }
+
+void rem_byte_tagarray(int reader) {
+  for(j=0;j<4;j++){
+          tagarray[reader][j]=0;
+        }  
+  }
+
+void rem_byte_mystr() {
+  for(j=0;j<4;j++){
+          mystr[j]=0;
         }  
   }
