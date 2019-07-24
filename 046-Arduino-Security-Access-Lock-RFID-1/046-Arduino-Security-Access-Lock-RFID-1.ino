@@ -101,7 +101,7 @@ void loop()
     delay(300);
     noTone(BUZZER);
     myServo.write(90);
-    delay(5000);
+    delay(4000);
     myServo.write(0);
     digitalWrite(LED_G, LOW);
   }
@@ -110,7 +110,7 @@ void loop()
     //Serial.println(" Access denied");
     digitalWrite(LED_R, HIGH);
     tone(BUZZER, 300);
-    delay(1000);
+    delay(800);
     digitalWrite(LED_R, LOW);
     noTone(BUZZER);
   }
