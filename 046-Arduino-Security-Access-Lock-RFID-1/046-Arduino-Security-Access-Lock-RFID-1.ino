@@ -100,7 +100,7 @@ void loop()
     tone(BUZZER, 500);
     delay(300);
     noTone(BUZZER);
-    myServo.write(180);
+    myServo.write(90);
     delay(5000);
     myServo.write(0);
     digitalWrite(LED_G, LOW);

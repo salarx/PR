@@ -10,10 +10,10 @@
 #define SS_4_PIN        6
 
 // Led and Relay PINS
-#define GreenLed        2
-#define relayIN         3
-#define RedLed          4
-
+#define LED_1 2
+#define LED_2 3
+#define LED_3 4
+#define LED_4 5
 
 // List of Tags UIDs that are allowed to open the puzzle
 byte scannedarray[4][4];
@@ -56,6 +56,10 @@ void setup() {
     mfrc522[reader].PCD_DumpVersionToSerial();
     //mfrc522[reader].PCD_SetAntennaGain(mfrc522[reader].RxGain_max);
   }
+  pinMode(LED_1, OUTPUT);
+  pinMode(LED_2, OUTPUT);
+  pinMode(LED_3, OUTPUT);
+  pinMode(LED_4, OUTPUT);
 }
 
 /*
@@ -79,7 +83,7 @@ void loop() {
     for(int i=0;i<4;i++){
       Serial.print(mystr[i], HEX);
       Serial.print(" ");
-      //delay(500);
+      delay(300);
     }
     Serial.println("");
     
@@ -103,6 +107,7 @@ void loop() {
           tagarray[i][j]=mystr[j];
         }
         rem_byte_mystr();
+        timefin[i].restart();
         break;
       }
     }  //end of db array
@@ -128,7 +133,7 @@ void loop() {
   for (j = 0; j < 4; j++) { //no parking
     present = false; 
     for (i = 0; i < 4; i++){
-      if(tagarray[j][0]==scannedarray[i][0] &&scannedarray[i][0]!=0 && tagarray[j][1]==scannedarray[i][1]){
+      if(tagarray[j][0]==scannedarray[i][0] && scannedarray[i][0]!=0 && tagarray[j][1]==scannedarray[i][1]){
         present = true;
         timefin[j].restart();
         Serial.println("Time reset.");
@@ -138,14 +143,42 @@ void loop() {
       if(present == false){
             //print
     for(int h=0; h<4;h++){
+      
       Serial.print(tagarray[j][h], HEX);
       Serial.print(" ");
-      delay(500);
+      delay(300);
       }
       Serial.println(" is non parked");
       Serial.println("");
       }     
 }
+
+  for (i = 0; i < 4; i++){
+    if(scannedarray[i][0]!=0){
+      if(i==0){
+        digitalWrite(LED_1, HIGH);}
+        if(i==1){
+        digitalWrite(LED_2, HIGH);}
+        if(i==2){
+        digitalWrite(LED_3, HIGH);}
+        if(i==3){
+        digitalWrite(LED_4, HIGH);}
+      }
+
+      else{
+        if(i==0){
+        digitalWrite(LED_1, LOW);}
+        if(i==1){
+        digitalWrite(LED_2, LOW);}
+        if(i==2){
+        digitalWrite(LED_3, LOW);}
+        if(i==3){
+        digitalWrite(LED_4, LOW);}
+        }
+    
+    }
+
+
   
 }
 
@@ -169,7 +202,7 @@ void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
     for(int j=0; j<4;j++){
       Serial.print(scannedarray[i][j], HEX);
       Serial.print(" ");
-      delay(500);
+      delay(300);
       }
       Serial.println("");
     }
