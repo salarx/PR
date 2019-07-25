@@ -7,10 +7,11 @@
 #define LED_G 5 //define green LED pin
 #define LED_R 4 //define red LED
 #define BUZZER 2 //buzzer pin
+
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance.
 Servo myServo; //define servo name
-void setup() 
-{
+
+void setup() {
   Serial.begin(9600);   // Initiate a serial communication
   SPI.begin();      // Initiate  SPI bus
   mfrc522.PCD_Init();   // Initiate MFRC522
@@ -22,10 +23,9 @@ void setup()
   noTone(BUZZER);
   //Serial.println("Put your card to the reader...");
   //Serial.println();
-
 }
-void loop() 
-{
+
+void loop() {
   // Look for new cards
   if ( ! mfrc522.PICC_IsNewCardPresent()) 
   {    
@@ -53,46 +53,46 @@ void loop()
   if (content.substring(1) == "63 0B D5 83" || content.substring(1) == "76 F5 D3 83" || content.substring(1) == "74 0C 5C D3" || content.substring(1) == "CA 9A 5D D3") //change here the UID of the card/cards that you want to give access
   {
 
-  if(mfrc522.uid.uidByte[0]==0x63
-  &&mfrc522.uid.uidByte[1]==0x0B
-  &&mfrc522.uid.uidByte[2]==0xD5
-  &&mfrc522.uid.uidByte[3]==0x83){
+    if(mfrc522.uid.uidByte[0]==0x63
+    &&mfrc522.uid.uidByte[1]==0x0B
+    &&mfrc522.uid.uidByte[2]==0xD5
+    &&mfrc522.uid.uidByte[3]==0x83) {
   
-  for(int i=0;i<4;i++){
-    Serial.write(mfrc522.uid.uidByte[i]);
-    }    
-  }
+    for(int i = 0; i < 4; i++) {
+      Serial.write(mfrc522.uid.uidByte[i]);
+      }
+    }
   
-  if(mfrc522.uid.uidByte[0]==0x76
-  &&mfrc522.uid.uidByte[1]==0xF5
-  &&mfrc522.uid.uidByte[2]==0xD3
-  &&mfrc522.uid.uidByte[3]==0x83){
+    if(mfrc522.uid.uidByte[0]==0x76
+    &&mfrc522.uid.uidByte[1]==0xF5
+    &&mfrc522.uid.uidByte[2]==0xD3
+    &&mfrc522.uid.uidByte[3]==0x83) {
   
-  for(int i=0;i<4;i++){
-    Serial.write(mfrc522.uid.uidByte[i]);
-    }    
-  }
+      for(int i = 0; i < 4; i++) {
+        Serial.write(mfrc522.uid.uidByte[i]);
+      }
+    }
     
-  if(mfrc522.uid.uidByte[0]==0xCA
-  &&mfrc522.uid.uidByte[1]==0x9A
-  &&mfrc522.uid.uidByte[2]==0x5D
-  &&mfrc522.uid.uidByte[3]==0xD3){
+    if(mfrc522.uid.uidByte[0]==0xCA
+    &&mfrc522.uid.uidByte[1]==0x9A
+    &&mfrc522.uid.uidByte[2]==0x5D
+    &&mfrc522.uid.uidByte[3]==0xD3) {
   
-  for(int i=0;i<4;i++){
-    Serial.write(mfrc522.uid.uidByte[i]);
-    }    
-  }
+      for(int i = 0; i < 4; i++) {
+        Serial.write(mfrc522.uid.uidByte[i]);
+      }
+    }
+  
     if(mfrc522.uid.uidByte[0]==0x74
-  &&mfrc522.uid.uidByte[1]==0x0C
-  &&mfrc522.uid.uidByte[2]==0x5C
-  &&mfrc522.uid.uidByte[3]==0xD3){
+    &&mfrc522.uid.uidByte[1]==0x0C
+    &&mfrc522.uid.uidByte[2]==0x5C
+    &&mfrc522.uid.uidByte[3]==0xD3) {
   
-  for(int i=0;i<4;i++){
-    Serial.write(mfrc522.uid.uidByte[i]);
-    }    
-  }
+      for(int i = 0; i < 4; i++) {
+        Serial.write(mfrc522.uid.uidByte[i]);
+      }    
+    }
   
-// 
     //Serial.println("Authorized access");
     //Serial.println();
     delay(500);
@@ -106,7 +106,7 @@ void loop()
     digitalWrite(LED_G, LOW);
   }
  
- else   {
+  else {
     //Serial.println(" Access denied");
     digitalWrite(LED_R, HIGH);
     tone(BUZZER, 300);
@@ -114,4 +114,4 @@ void loop()
     digitalWrite(LED_R, LOW);
     noTone(BUZZER);
   }
-  }
+}

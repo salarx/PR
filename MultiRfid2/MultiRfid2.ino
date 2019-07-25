@@ -15,19 +15,16 @@
 #define LED_3 4
 #define LED_4 5
 
-// List of Tags UIDs that are allowed to open the puzzle
+// List of Tags UIDs
 byte scannedarray[4][4];
 byte tagarray[4][4];
+
 byte mystr[4];
 int j, i;
-//Chrono timeinit[4];
+
 Chrono timefin[4];
 bool present = false;
 bool rescanned = false;
-
-// Inlocking status :
-int tagcount = 0;
-bool access = false;
 
 #define NR_OF_READERS   4
 
@@ -35,7 +32,6 @@ byte ssPins[] = {SS_1_PIN, SS_2_PIN, SS_3_PIN, SS_4_PIN};
 
 // Create an MFRC522 instance :
 MFRC522 mfrc522[NR_OF_READERS];
-//extern volatile unsigned long timer0_millis;
 
 /**
    Initialize.
@@ -54,8 +50,8 @@ void setup() {
     Serial.print(reader);
     Serial.print(F(": "));
     mfrc522[reader].PCD_DumpVersionToSerial();
-    //mfrc522[reader].PCD_SetAntennaGain(mfrc522[reader].RxGain_max);
   }
+  
   pinMode(LED_1, OUTPUT);
   pinMode(LED_2, OUTPUT);
   pinMode(LED_3, OUTPUT);
@@ -65,53 +61,46 @@ void setup() {
 /*
    Main loop.
 */
-
 void loop() {
-  for(i=0;i<4;i++){
-  if(timefin[i].hasPassed(20000) && tagarray[i][0]!=0){
-    Serial.print(timefin[i].elapsed());
-    Serial.print(" :");
-    for(j=0;j<4;j++){
-      Serial.print(tagarray[i][j], HEX);
-      Serial.print(" ");
-    }
-    Serial.println(":is not parked in parking zone");
+  for(i = 0; i < 4; i++) {
+    if(timefin[i].hasPassed(20000) && tagarray[i][0]!=0) {
+      Serial.print(timefin[i].elapsed());
+      Serial.print(" : ");
+      for(j = 0; j < 4; j++) {
+        Serial.print(tagarray[i][j], HEX);
+        Serial.print(" ");
+      }
+      Serial.println(":is not parked in parking zone");
     }
   }
-  Serial.readBytes(mystr,4);
-    Serial.print("Scanned Code ");
-    for(int i=0;i<4;i++){
-      Serial.print(mystr[i], HEX);
-      Serial.print(" ");
-      delay(300);
-    }
-    Serial.println("");
-    
-    for(i=0;i<4;i++){
-      if(mystr[0]==0){
-        break;
-        }
-      if(tagarray[i][0]==mystr[0]){                     //same tag scanned again 
-/*        for(j=0;j<4;j++){
-          tagarray[i][j]=0;
-        } */
-        rem_byte_tagarray(i);
-        rem_byte_mystr();
-        break;
-      }
-      if(tagarray[i][0]==0){
-        //timeinit[i] = elapsed();
-        //Serial.print("Time initial is ");
-        //Serial.println(timeinit[i]);
-        for(j=0;j<4;j++){
-          tagarray[i][j]=mystr[j];
-        }
-        rem_byte_mystr();
-        timefin[i].restart();
-        break;
-      }
-    }  //end of db array
 
+  Serial.readBytes(mystr,4);
+  Serial.print("Scanned Code ");
+  for(int i = 0; i < 4; i++) {
+    Serial.print(mystr[i], HEX);
+    Serial.print(" ");
+    delay(300);
+  }
+  Serial.println("");
+    
+  for(i = 0; i < 4; i++) {
+    if(mystr[0] == 0){
+      break;
+    }
+    if(tagarray[i][0] == mystr[0]) {  //same tag scanned again 
+      rem_byte_tagarray(i);
+      rem_byte_mystr();
+      break;
+    }
+    if(tagarray[i][0] == 0) {
+      for(j = 0; j < 4; j++) {
+        tagarray[i][j] = mystr[j];
+      }
+      rem_byte_mystr();
+      timefin[i].restart();
+      break;
+    }
+  }  //end of database
     
   for (uint8_t reader = 0; reader < NR_OF_READERS; reader++) {
 
@@ -127,101 +116,103 @@ void loop() {
     }
     else if (!mfrc522[reader].PICC_IsNewCardPresent()) {
       rem_byte_array(reader);
-      }
-    
-  } 
+    }
+  }
+
   for (j = 0; j < 4; j++) { //no parking
     present = false; 
-    for (i = 0; i < 4; i++){
-      if(tagarray[j][0]==scannedarray[i][0] && scannedarray[i][0]!=0 && tagarray[j][1]==scannedarray[i][1]){
+    for (i = 0; i < 4; i++) {
+      if(tagarray[j][0]==scannedarray[i][0] && scannedarray[i][0]!=0 && tagarray[j][1]==scannedarray[i][1]) {
         present = true;
         timefin[j].restart();
-        Serial.println("Time reset.");
+        Serial.println("Successfully parked.");
         break;
-      }}
-      
-      if(present == false){
-            //print
-    for(int h=0; h<4;h++){
-      
-      Serial.print(tagarray[j][h], HEX);
-      Serial.print(" ");
-      delay(300);
       }
-      Serial.println(" is non parked");
+    }
+      
+    if(present == false) {
+      for(int h = 0; h < 4; h++) {
+        Serial.print(tagarray[j][h], HEX);
+        Serial.print(" ");
+        delay(300);
+      }
+      Serial.println(" is un-parked");
       Serial.println("");
-      }     
-}
+    }     
+  }
 
-  for (i = 0; i < 4; i++){
-    if(scannedarray[i][0]!=0){
-      if(i==0){
-        digitalWrite(LED_1, HIGH);}
-        if(i==1){
-        digitalWrite(LED_2, HIGH);}
-        if(i==2){
-        digitalWrite(LED_3, HIGH);}
-        if(i==3){
-        digitalWrite(LED_4, HIGH);}
+  for (i = 0; i < 4; i++) {
+    if(scannedarray[i][0] != 0) {
+      if(i == 0) {
+        digitalWrite(LED_1, HIGH);
       }
-
-      else{
-        if(i==0){
-        digitalWrite(LED_1, LOW);}
-        if(i==1){
-        digitalWrite(LED_2, LOW);}
-        if(i==2){
-        digitalWrite(LED_3, LOW);}
-        if(i==3){
-        digitalWrite(LED_4, LOW);}
-        }
-    
+      if(i == 1) {
+        digitalWrite(LED_2, HIGH);
+      }
+      if(i == 2) {
+        digitalWrite(LED_3, HIGH);
+      }
+      if(i == 3) {
+        digitalWrite(LED_4, HIGH);
+      }
     }
 
-
-  
+    else {
+      if(i == 0) {
+        digitalWrite(LED_1, LOW);
+      }
+      if(i == 1) {
+        digitalWrite(LED_2, LOW);
+      }
+      if(i == 2) {
+        digitalWrite(LED_3, LOW);
+      }
+      if(i == 3) {
+        digitalWrite(LED_4, LOW);
+      }
+    }    
+  }  
 }
 
 /**
    Helper routine to dump a byte array as hex values to Serial.
 */
-
-
 void dump_byte_array(uint8_t reader,byte * buffer, byte bufferSize) {
-        for(j=0;j<4;j++){
-          scannedarray[reader][j]=buffer[j];
-        }
+  for(j = 0; j < 4; j++) {
+    scannedarray[reader][j] = buffer[j];
+  }
   
-  for (byte i = 0; i < bufferSize; i++) {
+  for(byte i = 0; i < bufferSize; i++) {
     Serial.print(buffer[i] < 0x10 ? " 0" : " ");
     Serial.print(buffer[i], HEX);
   }
-  Serial.println("sc array : ");
+
+  Serial.println(" Scanned Array : ");
   Serial.println("");
-  for(i = 0; i<4; i++){  //print
-    for(int j=0; j<4;j++){
+  for(i = 0; i < 4; i++) {  //print
+    for(int j = 0; j < 4; j++) {
       Serial.print(scannedarray[i][j], HEX);
       Serial.print(" ");
       delay(300);
-      }
-      Serial.println("");
     }
+    Serial.println("");
+  }
 }
 
 void rem_byte_array(uint8_t reader) {
-  for(j=0;j<4;j++){
-          scannedarray[reader][j]=0;
-        }  
-  }
+  for(j = 0; j < 4; j++){
+    scannedarray[reader][j] = 0;
+  }  
+}
 
 void rem_byte_tagarray(int reader) {
-  for(j=0;j<4;j++){
-          tagarray[reader][j]=0;
-        }  
-  }
+  for(j = 0; j < 4; j++){
+    tagarray[reader][j] = 0;
+  }  
+}
 
 void rem_byte_mystr() {
-  for(j=0;j<4;j++){
-          mystr[j]=0;
-        }  
-  }
+  for(j = 0; j < 4; j++){
+    mystr[j] = 0;
+  }  
+}
