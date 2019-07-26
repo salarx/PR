@@ -17,7 +17,7 @@ void setup() {
   mfrc522.PCD_Init();   // Initiate MFRC522
   myServo.attach(3); //servo pin
   myServo.write(0); //servo start position
-  pinMode(LED_G, OUTPUT);
+  pinMode(LED_G, OUTPUT);//setup led 
   pinMode(LED_R, OUTPUT);
   pinMode(BUZZER, OUTPUT);
   noTone(BUZZER);

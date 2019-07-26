@@ -11,9 +11,9 @@
 
 // Led and Relay PINS
 #define LED_1 2
-#define LED_2 3
-#define LED_3 4
-#define LED_4 5
+#define LED_2 5
+#define LED_3 3
+#define LED_4 4
 
 // List of Tags UIDs
 byte scannedarray[4][4];
